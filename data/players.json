@@ -1,0 +1,26 @@
+[
+  {
+    "username": "JokingDK",
+    "country_code": "DK",
+    "overall_points": 305,
+    "overall_tier": "LT1",
+    "kits": {
+      "diamond_smp": "HT2",
+      "netherite_pot": "LT1",
+      "mace": "HT2",
+      "shield": "LT1"
+    }
+  },
+  {
+    "username": "AXIMITY",
+    "country_code": "US",
+    "overall_points": 281,
+    "overall_tier": "HT2",
+    "kits": {
+      "diamond_smp": "MT2",
+      "netherite_pot": "LT2",
+      "mace": "HT3",
+      "shield": "HT1"
+    }
+  }
+]
