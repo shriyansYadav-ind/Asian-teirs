@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Serverless Backend Control Panel</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+</head>
+<body class="bg-slate-950 text-slate-200 p-4 md:p-8 font-sans">
+    <div class="max-w-2xl mx-auto bg-slate-900 border border-slate-800 rounded-2xl p-6 space-y-6 shadow-2xl">
+        <div class="border-b border-slate-800 pb-4 flex justify-between items-center">
+            <div>
+                <h2 class="text-xl font-extrabold text-white tracking-wide">Serverless Control Panel</h2>
+                <p class="text-xs text-slate-400 mt-1">Directly dispatches secure event webhooks to your GitHub infrastructure.</p>
+            </div>
+            <a href="index.html" class="text-xs font-semibold text-cyan-400 hover:underline">← Public Board</a>
+        </div>
+
+        <div class="space-y-5">
+            <div>
+                <label class="block text-xs uppercase tracking-wider text-slate-400 mb-1.5 font-bold">GitHub Fine-Grained Access Token</label>
+                <input type="password" id="ghToken" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-3 text-sm font-mono text-cyan-400 focus:outline-none focus:border-cyan-600 shadow-inner">
+                <p class="text-[10px] text-slate-500 mt-1">Requires 'Contents' Read/Write authorizations matching this specific repository.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-xs text-slate-400 mb-1 font-medium">Target Player Username</label>
+                    <input type="text" id="username" placeholder="e.g. JokingDK" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-2.5 text-sm text-white focus:outline-none focus:border-slate-700">
+                </div>
+                <div>
+                    <label class="block text-xs text-slate-400 mb-1 font-medium">Country Code</label>
+                    <input type="text" id="countryCode" placeholder="DK" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-2.5 text-sm text-white focus:outline-none focus:border-slate-700">
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-xs text-slate-400 mb-1 font-medium">Overall Points Score</label>
+                    <input type="number" id="points" step="0.01" placeholder="305" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-2.5 text-sm text-white focus:outline-none focus:border-slate-700">
+                </div>
+                <div>
+                    <label class="block text-xs text-slate-400 mb-1 font-medium">Overall Tier Rating</label>
+                    <select id="tier" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-2.5 text-sm font-bold text-yellow-400 focus:outline-none focus:border-slate-700">
+                        <option value="HT1">HT1 (High Tier Master 1)</option>
+                        <option value="MT1">MT1</option>
+                        <option value="LT1">LT1</option>
+                        <option value="HT2">HT2</option>
+                        <option value="MT2">MT2</option>
+                        <option value="LT2">LT2</option>
+                        <option value="LT5">LT5 (Beginner)</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 border-t border-slate-800 pt-4">
+                <div>
+                    <label class="block text-xs text-slate-500 mb-1">Diamond SMP Kit</label>
+                    <input type="text" id="smpKit" placeholder="HT2" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-2 text-sm text-slate-300 focus:outline-none">
+                </div>
+                <div>
+                    <label class="block text-xs text-slate-500 mb-1">Mace Kit</label>
+                    <input type="text" id="maceKit" placeholder="HT2" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-2 text-sm text-slate-300 focus:outline-none">
+                </div>
+                <div>
+                    <label class="block text-xs text-slate-500 mb-1">Netherite Pot Kit</label>
+                    <input type="text" id="potKit" placeholder="LT1" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-2 text-sm text-slate-300 focus:outline-none">
+                </div>
+            </div>
+
+            <button onclick="dispatchUpdate()" class="w-full bg-cyan-600 hover:bg-cyan-500 text-white font-bold p-3 rounded-lg transition-all text-sm tracking-wide shadow-lg cursor-pointer transform active:scale-[0.99]">
+                Commit Changes & Trigger Build Pipeline
+            </button>
+            <div id="statusBox" class="hidden rounded-lg p-3 text-center text-xs font-semibold"></div>
+        </div>
+    </div>
+
+    <script>
+        function dispatchUpdate() {
+            const token = document.getElementById('ghToken').value;
+            const username = document.getElementById('username').value;
+            const points = document.getElementById('points').value;
+            const country = document.getElementById('countryCode').value || "US";
+            const tier = document.getElementById('tier').value;
+            const smp = document.getElementById('smpKit').value || "?";
+            const mace = document.getElementById('maceKit').value || "?";
+            const pot = document.getElementById('potKit').value || "?";
+            const statusBox = document.getElementById('statusBox');
+
+            if(!token || !username || !points) {
+                statusBox.innerText = "⚠️ Error: Please complete the Admin Key, Player Username, and Points input entries.";
+                statusBox.className = "block bg-red-950/60 text-red-400 border border-red-900 rounded-lg p-3 text-center text-xs font-semibold";
+                return;
+            }
+
+            statusBox.innerText = "🚀 Accessing GitHub Webhook dispatch channels...";
+            statusBox.className = "block bg-cyan-950/60 text-cyan-400 border border-cyan-900 rounded-lg p-3 text-center text-xs font-semibold";
+
+            // CONFIGURE YOUR REPOSITORY BOUNDARIES HERE
+            const OWNER = "YOUR_GITHUB_USERNAME"; 
+            const REPO = "YOUR_REPOSITORY_NAME";
+
+            fetch(`https://api.github.com/repos/${OWNER}/${REPO}/dispatches`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Accept': 'application/vnd.github+json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    event_type: 'admin_update_player',
+                    client_payload: {
+                        username: username,
+                        country_code: country.toUpperCase(),
+                        overall_points: points,
+                        overall_tier: tier,
+                        diamond_smp: smp,
+                        mace: mace,
+                        netherite_pot: pot
+                    }
+                })
+            }).then(res => {
+                if(res.status === 204) {
+                    statusBox.innerText = "✅ Success dispatched! GitHub Actions has accepted the pipeline mutation payload. Ranks will update across the live frontend page in approximately 30-45 seconds.";
+                    statusBox.className = "block bg-green-950/60 text-green-400 border border-green-900 rounded-lg p-3 text-center text-xs font-semibold";
+                } else {
+                    statusBox.innerText = `❌ Error: Connection rejected with status flag [${res.status}]. Confirm your account details and token authorizations.`;
+                    statusBox.className = "block bg-red-950/60 text-red-400 border border-red-900 rounded-lg p-3 text-center text-xs font-semibold";
+                }
+            }).catch(err => {
+                statusBox.innerText = "❌ Exception encountered while mapping external data requests.";
+                statusBox.className = "block bg-red-950/60 text-red-400 border border-red-900 rounded-lg p-3 text-center text-xs font-semibold";
+            });
+        }
+    </script>
+</body>
+</html>
