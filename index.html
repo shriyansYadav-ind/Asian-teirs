@@ -195,14 +195,6 @@
         let currentMode = 'overall';
         let playerData = [];
 
-        // Mock Fallback Data in case local player.json fetch fails or is absent
-        const samplePlayers = [
-            { username: "Plutonicdwarf91", country_code: "IN", overall_points: 2850, overall_tier: "HT1", kits: { diamond_smp: "HT1", mace: "HT1", crystal: "MT1", lifesteal: "HT2", netherite_pot: "MT2", axe: "HT1", box_pvp: "LT1" } },
-            { username: "Spandan_PvP", country_code: "IN", overall_points: 2420, overall_tier: "HT2", kits: { diamond_smp: "HT2", mace: "MT1", crystal: "HT1", lifesteal: "MT1", netherite_pot: "LT1", axe: "MT2", box_pvp: "HT2" } },
-            { username: "Smitidal", country_code: "IN", overall_points: 1980, overall_tier: "MT1", kits: { diamond_smp: "MT1", mace: "LT1", crystal: "MT2", lifesteal: "HT1", netherite_pot: "MT1", axe: "LT2", box_pvp: "LT2" } },
-            { username: "Amaan_God", country_code: "US", overall_points: 1750, overall_tier: "MT2", kits: { diamond_smp: "LT1", mace: "HT2", crystal: "LT1", lifesteal: "LT2", netherite_pot: "HT2", axe: "MT1", box_pvp: "MT1" } },
-            { username: "Shriyans_MC", country_code: "IN", overall_points: 1420, overall_tier: "LT1", kits: { diamond_smp: "LT2", mace: "LT2", crystal: "LT2", lifesteal: "MT2", netherite_pot: "LT2", axe: "LT1", box_pvp: "LT1" } }
-        ];
 
         const getTierClass = (tier) => {
             if (!tier || tier === '?') return 'tier-none';
