@@ -23,16 +23,4 @@
       "shield": "HT1"
     }
   },
-    {
-    "username": "Plutonic",
-    "country_code": "IN",
-    "overall_points": 210,
-    "overall_tier": "MT1",
-    "kits": {
-      "diamond_smp": "LT2",
-      "netherite_pot": "LT3",
-      "mace": "HT2",
-      "shielD": "HT4"
-  }
-    },
 ]
